@@ -10,7 +10,7 @@ import RealmSwift
 
 @MainActor
 final class MainListViewModel: ObservableObject {
-    @ObservedResults(Character.self) var characters
+    @Published var characters = [Character]()
     @Published var state = MainListState.stable
     @Published var customMessage = "Loading..."
     @Published var isCharacterPresent = false
@@ -23,8 +23,8 @@ final class MainListViewModel: ObservableObject {
             let getCharactersResponse = await APIService.shared.getAllCharacters()
             state = .stable
             switch getCharactersResponse {
-            case .success(_):
-                break
+            case .success(let characters):
+                self.characters = characters
             case .failure(let customError):
                 print(customError)
             }

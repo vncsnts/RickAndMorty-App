@@ -8,46 +8,23 @@
 import Foundation
 import RealmSwift
 
-final class DatabaseService {
+actor DatabaseService {
     static let shared = DatabaseService()
+    @ObservedResults(Character.self) var characters
     
     @MainActor
     func storeCharacter(_ character: Character) async {
-        do {
-            let realm = try await Realm()
-            let existingCharacter = realm.object(ofType: Character.self, forPrimaryKey: character.id)
-            if existingCharacter == nil {
-                try realm.write {
-                    realm.add(character)
-                }
-            }
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
+        if !characters.contains(where: {$0.id == character.id}) {
+            $characters.append(character)
         }
     }
     
     @MainActor
     func updateCharacter(_ character: Character) async {
-        do {
-            let realm = try await Realm()
-            if let existingCharacter = realm.object(ofType: Character.self, forPrimaryKey: character.id) {
-                try realm.write {
-                    existingCharacter.isFavorite.toggle()
-                }
-            }
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
-        }
+        character.isFavorite.toggle()
     }
     
-    @MainActor
-    func getAllCharacters() async -> Result<Results<Character>, Error> {
-        do {
-            let realm = try await Realm()
-            return .success(realm.objects(Character.self))
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
-            return .failure(error)
-        }
+    func getAllCharacters() async throws -> Results<Character> {
+        return await characters
     }
 }

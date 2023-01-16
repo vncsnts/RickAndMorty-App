@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8A4C232629753FDB0077A6B2 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8A4C232529753FDB0077A6B2 /* SDWebImageSwiftUI */; };
 		8A781DC929750D8900E554C6 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A781DC829750D8900E554C6 /* LoadingView.swift */; };
-		8A781DCB29750FEF00E554C6 /* CacheAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A781DCA29750FEF00E554C6 /* CacheAsyncImage.swift */; };
 		8A781DD42975141E00E554C6 /* CharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A781DD32975141E00E554C6 /* CharacterView.swift */; };
 		8A781DD62975397300E554C6 /* MainListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A781DD52975397300E554C6 /* MainListRowView.swift */; };
 		8AC245FE2974EA0000F63A64 /* RickAndMortyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC245FD2974EA0000F63A64 /* RickAndMortyApp.swift */; };
@@ -30,7 +29,6 @@
 
 /* Begin PBXFileReference section */
 		8A781DC829750D8900E554C6 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		8A781DCA29750FEF00E554C6 /* CacheAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheAsyncImage.swift; sourceTree = "<group>"; };
 		8A781DD32975141E00E554C6 /* CharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterView.swift; sourceTree = "<group>"; };
 		8A781DD52975397300E554C6 /* MainListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainListRowView.swift; sourceTree = "<group>"; };
 		8AC245FA2974EA0000F63A64 /* RickAndMorty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RickAndMorty.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -224,7 +222,6 @@
 			isa = PBXGroup;
 			children = (
 				8AC2462C2974FAA600F63A64 /* APIServiceUtlity.swift */,
-				8A781DCA29750FEF00E554C6 /* CacheAsyncImage.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -315,7 +312,6 @@
 				8AC246002974EA0000F63A64 /* MainListView.swift in Sources */,
 				8A781DD42975141E00E554C6 /* CharacterView.swift in Sources */,
 				8A781DD62975397300E554C6 /* MainListRowView.swift in Sources */,
-				8A781DCB29750FEF00E554C6 /* CacheAsyncImage.swift in Sources */,
 				8AC2462A2974F36700F63A64 /* MainListViewModel.swift in Sources */,
 				8AC2462D2974FAA600F63A64 /* APIServiceUtlity.swift in Sources */,
 				8AC2461C2974EC8B00F63A64 /* DatabaseService.swift in Sources */,

@@ -30,18 +30,12 @@ actor APIService {
             }
             return .success(characters)
         } catch {
-            let allCharactersOnLocalResponse = await DatabaseService.shared.getAllCharacters()
-            switch allCharactersOnLocalResponse {
-            case .success(let allCharactersOnLocal):
-                var characters = [Character]()
-                for character in allCharactersOnLocal {
-                    characters.append(character)
-                }
-                return .success(characters)
-            case .failure(let error):
+            do {
+                let allLocalCharacters = try await DatabaseService.shared.getAllCharacters()
+                return .success(allLocalCharacters.map{$0})
+            } catch {
                 return .failure(.init(message: error.localizedDescription))
             }
-            
         }
     }    
 }
