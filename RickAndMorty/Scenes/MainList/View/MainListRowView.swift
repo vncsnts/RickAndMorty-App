@@ -18,27 +18,25 @@ struct MainListRowView: View {
 
     var body: some View {
         HStack {
-            Image(systemName: character.isFavorite ? "star.fill" : "star")
-                .resizable()
-                .foregroundColor(.blue)
-                .frame(width: minimumContentDimension, height: minimumContentDimension)
-                .onTapGesture {
-                    didTapFavorites()
-                }
             AnimatedImage(url: URL(string: character.image))
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(minWidth: minimumContentDimension, maxWidth: maximumContentDimension, minHeight: minimumContentDimension, maxHeight: maximumContentDimension)
+                .clipShape(Circle())
+                .shadow(radius: 5)
             Text(character.name)
                 .font(.headline)
             Spacer()
-            Image(systemName: "info.circle.fill")
+            Image(systemName: character.isFavorite ? "star.fill" : "star")
                 .resizable()
-                .foregroundColor(.blue)
+                .foregroundColor(Color.accentColor)
                 .frame(width: minimumContentDimension, height: minimumContentDimension)
                 .onTapGesture {
-                    didTapPresent()
+                    didTapFavorites()
                 }
+        }
+        .onTapGesture {
+            didTapPresent()
         }
     }
 }

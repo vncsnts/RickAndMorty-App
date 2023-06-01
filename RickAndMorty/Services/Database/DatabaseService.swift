@@ -8,23 +8,29 @@
 import Foundation
 import RealmSwift
 
-actor DatabaseService {
-    static let shared = DatabaseService()
-    @ObservedResults(Character.self) var characters
+actor DatabaseActor<T: Object> {
+    // An implicitly-unwrapped optional is used here to let us pass `self` to
+    // `Realm(actor:)` within `init`
+    var realm: Realm!
     
-    @MainActor
-    func storeCharacter(_ character: Character) async {
-        if !characters.contains(where: {$0.id == character.id}) {
-            $characters.append(character)
+    init() async throws {
+        realm = try await Realm(actor: self)
+    }
+    
+    func createOrUpdate<T: Object>(_ item: T, update: Realm.UpdatePolicy = .all, updateProperties: (T) -> Void) async throws {
+
+        try realm.write {
+            updateProperties(item)
+            realm.add(item, update: update)
         }
     }
     
-    @MainActor
-    func updateCharacter(_ character: Character) async {
-        character.isFavorite.toggle()
+    func readAll() throws -> Results<T> {
+        return realm.objects(T.self)
     }
     
-    func getAllCharacters() async throws -> Results<Character> {
-        return await characters
+    func readAllCount() throws -> Int {
+        return realm.objects(T.self).count
     }
 }
+

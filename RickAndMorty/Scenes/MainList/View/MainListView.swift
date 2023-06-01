@@ -12,23 +12,19 @@ struct MainListView: View {
     
     var body: some View {
         ZStack {
-            switch viewModel.state {
-            case .stable:
-                List {
-                    ForEach(viewModel.characters) { character in
-                        MainListRowView(character: character) {
-                            viewModel.toggleFavoriteForCharacter(character: character)
-                        } didTapPresent: {
-                            viewModel.currentCharacter = character
-                            viewModel.isCharacterPresent = true
-                        }
+            List {
+                ForEach(viewModel.characters) { character in
+                    MainListRowView(character: character) {
+                        viewModel.toggleFavoriteForCharacter(character: character)
+                    } didTapPresent: {
+                        viewModel.currentCharacter = character
+                        viewModel.isCharacterPresent = true
                     }
+                    .padding(.horizontal)
+                    .listRowSeparator(.hidden)
                 }
-                .animation(.easeIn, value: viewModel.state)
-            case .loading:
-                LoadingView(message: $viewModel.customMessage)
-                    .animation(.easeIn, value: viewModel.state)
             }
+            .listStyle(.plain)
         }
         .navigationTitle("Characters")
         .onAppear {
@@ -40,7 +36,7 @@ struct MainListView: View {
                     viewModel.currentCharacter = nil
                 }
         }
-        
+        .loadingView(isLoading: $viewModel.isLoading, message: $viewModel.loadingMessage)
     }
 }
 

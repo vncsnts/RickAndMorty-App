@@ -11,31 +11,52 @@ import RealmSwift
 @MainActor
 final class MainListViewModel: ObservableObject {
     @Published var characters = [Character]()
-    @Published var state = MainListState.stable
-    @Published var customMessage = "Loading..."
+    @Published var isLoading = false
+    @Published var loadingMessage = ""
     @Published var isCharacterPresent = false
     @Published var currentCharacter: Character?
+    private let apiService = APIService()
+    private var charactersDb: DatabaseActor<Character>!
+    
+    init() {
+        Task {
+            do {
+                self.charactersDb = try await DatabaseActor<Character>()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
     
     func getCharacters() {
         Task {
-            customMessage = "Loading Characters..."
-            state = .loading
-            let getCharactersResponse = await APIService.shared.getAllCharacters()
-            state = .stable
+            isLoading = true
+            loadingMessage = "Loading Characters..."
+            let getCharactersResponse = await apiService.getAllCharacters()
             switch getCharactersResponse {
             case .success(let characters):
-                self.characters = characters
-            case .failure(let customError):
-                print(customError)
+                for character in characters {
+                    try await self.charactersDb.createOrUpdate(character) { _ in
+                        
+                    }
+                }
+                
+                self.characters = try await Array(self.charactersDb.readAll())
+            case .failure(_):
+                self.characters = try await Array(self.charactersDb.readAll())
             }
+            isLoading = false
         }
     }
     
     func toggleFavoriteForCharacter(character: Character) {
         Task {
-            state = .loading
-            await DatabaseService.shared.updateCharacter(character)
-            state = .stable
+            try await charactersDb.createOrUpdate(character, updateProperties: { _ in
+                character.isFavorite.toggle()
+            })
+            
+            guard let firstIndexForCharacter = characters.firstIndex(of: character) else { return }
+            characters[firstIndexForCharacter] = character
         }
     }
 }

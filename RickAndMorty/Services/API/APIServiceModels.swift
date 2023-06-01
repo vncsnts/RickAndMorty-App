@@ -8,7 +8,7 @@
 import Foundation
 
 /// An Error with an option to add a custom message and supply the data that caused the error as optional
-struct CustomError: Error {
+struct ApiError: Error {
     var message: String
     var error: Error?
 }
