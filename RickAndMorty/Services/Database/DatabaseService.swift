@@ -8,46 +8,29 @@
 import Foundation
 import RealmSwift
 
-final class DatabaseService {
-    static let shared = DatabaseService()
+actor DatabaseActor<T: Object> {
+    // An implicitly-unwrapped optional is used here to let us pass `self` to
+    // `Realm(actor:)` within `init`
+    var realm: Realm!
     
-    @MainActor
-    func storeCharacter(_ character: Character) async {
-        do {
-            let realm = try await Realm()
-            let existingCharacter = realm.object(ofType: Character.self, forPrimaryKey: character.id)
-            if existingCharacter == nil {
-                try realm.write {
-                    realm.add(character)
-                }
-            }
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
+    init() async throws {
+        realm = try await Realm(actor: self)
+    }
+    
+    func createOrUpdate<T: Object>(_ item: T, update: Realm.UpdatePolicy = .all, updateProperties: (T) -> Void) async throws {
+
+        try realm.write {
+            updateProperties(item)
+            realm.add(item, update: update)
         }
     }
     
-    @MainActor
-    func updateCharacter(_ character: Character) async {
-        do {
-            let realm = try await Realm()
-            if let existingCharacter = realm.object(ofType: Character.self, forPrimaryKey: character.id) {
-                try realm.write {
-                    existingCharacter.isFavorite.toggle()
-                }
-            }
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
-        }
+    func readAll() throws -> Results<T> {
+        return realm.objects(T.self)
     }
     
-    @MainActor
-    func getAllCharacters() async -> Result<Results<Character>, Error> {
-        do {
-            let realm = try await Realm()
-            return .success(realm.objects(Character.self))
-        } catch (let error) {
-            print("An error occurred while storing the character: \(error)")
-            return .failure(error)
-        }
+    func readAllCount() throws -> Int {
+        return realm.objects(T.self).count
     }
 }
+

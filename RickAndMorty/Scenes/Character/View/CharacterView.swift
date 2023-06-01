@@ -12,34 +12,36 @@ struct CharacterView: View {
     @State var character: Character
     
     var body: some View {
-        VStack {
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(character.name)
-                        .font(.largeTitle).bold()
-                    Spacer()
-                }
-            }
+        ZStack {
             VStack {
                 AnimatedImage(url: URL(string: character.image))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }
-            .clipShape(Rectangle())
-            .cornerRadius(15)
-            .shadow(color: .blue, radius: 15)
-            .padding()
-            
+            .blur(radius: 100)
             VStack(alignment: .leading) {
-                Text("Status: \(character.status)")
-                    .font(.headline)
-                Text("Gender: \(character.gender)")
-                    .font(.headline)
+                VStack {
+                    AnimatedImage(url: URL(string: character.image))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }
+                .clipShape(Rectangle())
+                .cornerRadius(15)
+                .padding()
+                
+                VStack(alignment: .leading) {
+                    Text("Name: \(character.name)")
+                        .font(.headline)
+                    Text("Status: \(character.status)")
+                        .font(.headline)
+                    Text("Gender: \(character.gender)")
+                        .font(.headline)
+                }
+                Spacer()
             }
-            Spacer()
+            .padding()
         }
-        .padding()
-        .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.light)
     }
 }
 
