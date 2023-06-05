@@ -11,32 +11,27 @@ struct MainListView: View {
     @ObservedObject var viewModel = MainListViewModel()
     
     var body: some View {
-        ZStack {
-            List {
-                ForEach(viewModel.characters) { character in
-                    MainListRowView(character: character) {
-                        viewModel.toggleFavoriteForCharacter(character: character)
-                    } didTapPresent: {
-                        viewModel.currentCharacter = character
-                        viewModel.isCharacterPresent = true
-                    }
-                    .padding(.horizontal)
-                    .listRowSeparator(.hidden)
+        List {
+            ForEach(viewModel.characters) { character in
+                MainListRowView(character: character) {
+                    viewModel.toggleFavoriteForCharacter(character: character)
+                } didTapPresent: {
+                    viewModel.currentCharacter = character
+                    viewModel.isCharacterPresent = true
                 }
+                .padding(.horizontal)
+                .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
         }
+        .listStyle(.plain)
         .navigationTitle("Characters")
+        .loadingView(isLoading: $viewModel.isLoading, message: $viewModel.loadingMessage)
         .onAppear {
             viewModel.getCharacters()
         }
         .sheet(isPresented: $viewModel.isCharacterPresent) {
             CharacterView(character: viewModel.currentCharacter ?? Character())
-                .onDisappear {
-                    viewModel.currentCharacter = nil
-                }
         }
-        .loadingView(isLoading: $viewModel.isLoading, message: $viewModel.loadingMessage)
     }
 }
 
