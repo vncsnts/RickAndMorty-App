@@ -36,11 +36,14 @@ final class MainListViewModel: ObservableObject {
             switch getCharactersResponse {
             case .success(let characters):
                 for character in characters {
-                    try await self.charactersDb.createOrUpdate(character) { _ in
-                        
+                    if let localCharacter = try await Array(self.charactersDb.readAll()).first(where: {$0.id == character.id}), localCharacter.isFavorite {
+                        try await self.charactersDb.createOrUpdate(character, updateProperties: { toBeSavedCharacter in
+                            toBeSavedCharacter.isFavorite = true
+                        })
+                    } else {
+                        try await self.charactersDb.createOrUpdate(character, updateProperties: { _ in })
                     }
                 }
-                
                 self.characters = try await Array(self.charactersDb.readAll())
             case .failure(_):
                 self.characters = try await Array(self.charactersDb.readAll())
@@ -51,7 +54,7 @@ final class MainListViewModel: ObservableObject {
     
     func toggleFavoriteForCharacter(character: Character) {
         Task {
-            try await charactersDb.createOrUpdate(character, updateProperties: { _ in
+            try await charactersDb.createOrUpdate(character, updateProperties: { test in
                 character.isFavorite.toggle()
             })
             

@@ -41,7 +41,6 @@ struct CharacterView: View {
             }
             .padding()
         }
-        .preferredColorScheme(.light)
     }
 }
 
